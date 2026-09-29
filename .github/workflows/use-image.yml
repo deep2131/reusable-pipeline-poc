@@ -1,0 +1,38 @@
+name: Test Reusable Docker Image
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  test-docker-image:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ghcr.io/deep2131/reusable-pipeline-poc:1.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+
+      - name: Show Execution Environment
+        run: |
+          echo "Running inside reusable image"
+
+          cat /etc/os-release | head -5
+
+      - name: Run Reusable Demo Script
+        run: |
+          chmod +x scripts/demo.sh
+          ./scripts/demo.sh
